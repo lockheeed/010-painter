@@ -1,0 +1,1 @@
+pyinstaller "010 painter.pyw" -F -i icon.ico -p modules --specpath build -n "010 painter"
