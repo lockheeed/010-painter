@@ -9,6 +9,7 @@ class GraphData(object):
         self.data = data
         
         self.values = []
+        self.cycles = 0
         self.name = None
         self.color = 'black'
         self.name = '?'
@@ -21,12 +22,10 @@ class GraphData(object):
         
         match = re.search('(([01][01]\ )*)', self.data)
         self.values = [int(v) for v in match.group()[:-1].replace(' ', '')]
+        self.cycles = len(self.values)//2
+
         for attr, val in map(lambda x: x.split('='), self.data[match.span()[1]:].split()):
             setattr(self, attr, val)
-
-    @property
-    def cycles(self):
-        return len(self.values)//2
 
 
 class Parser(object):
