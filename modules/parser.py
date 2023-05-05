@@ -9,6 +9,7 @@ class GraphData(object):
         self.data = data
         
         self.values = []
+        self.cycles = 0
         self.name = None
         self.color = 'black'
         self.name = '?'
@@ -16,17 +17,16 @@ class GraphData(object):
         self.parse()
 
     def parse(self):
-        if not re.fullmatch(r'([01]{2}\ )*(\w*=[^\ ]*\ ?)*', self.data):
+        if not re.fullmatch(r'([01]{2}\ )*[01]{2}(\ \w*=[^\ ]+)*?', self.data):
             raise InvalidDataFormatError(self.data)
         
-        match = re.search('(([01][01]\ )*)', self.data)
-        self.values = [int(v) for v in match.group()[:-1].replace(' ', '')]
-        for attr, val in map(lambda x: x.split('='), self.data[match.span()[1]:].split()):
-            setattr(self, attr, val)
+        match = re.search(r'([01]{2}\ )*[01]{2}', self.data)
+        self.values = [int(v) for v in match.group().replace(' ', '')]
+        self.cycles = len(self.values)//2
 
-    @property
-    def cycles(self):
-        return len(self.values)//2
+        if re.search('=', self.data):
+            for attr, val in map(lambda x: x.split('='), self.data[match.span()[1]:].split()):
+                setattr(self, attr, val)
 
 
 class Parser(object):
