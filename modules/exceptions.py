@@ -1,13 +1,4 @@
-import ctypes
-
-
-MB_ICONERROR: int = 0x10
-MB_ICONWARNING: int = 0x30
-MB_ICONINFORMATION: int = 0x40
-
-
-def MessageBox(title: str, body: str, msg_type: int):
-    ctypes.WinDLL('user32').MessageBoxW(0, body, title, msg_type)
+from .common import MessageBox, MB_ICONERROR
 
 
 class PaiterException(BaseException):

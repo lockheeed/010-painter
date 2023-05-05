@@ -17,15 +17,16 @@ class GraphData(object):
         self.parse()
 
     def parse(self):
-        if not re.fullmatch(r'([01]{2}\ )*(\w*=[^\ ]*\ ?)*', self.data):
+        if not re.fullmatch(r'([01]{2}\ )*[01]{2}(\ \w*=[^\ ]+)*?', self.data):
             raise InvalidDataFormatError(self.data)
         
-        match = re.search('(([01][01]\ )*)', self.data)
-        self.values = [int(v) for v in match.group()[:-1].replace(' ', '')]
+        match = re.search(r'([01]{2}\ )*[01]{2}', self.data)
+        self.values = [int(v) for v in match.group().replace(' ', '')]
         self.cycles = len(self.values)//2
 
-        for attr, val in map(lambda x: x.split('='), self.data[match.span()[1]:].split()):
-            setattr(self, attr, val)
+        if re.search('=', self.data):
+            for attr, val in map(lambda x: x.split('='), self.data[match.span()[1]:].split()):
+                setattr(self, attr, val)
 
 
 class Parser(object):
